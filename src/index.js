@@ -11,12 +11,7 @@ export function useRecord(onRecordingComplete, onRecordingError) {
   const [isRecording, setIsRecording] = useState(false);
   const [recorded, setRecorded] = useState(false);
 
-  const _recorder = new vmsg.Recorder({
-    wasmURL,
-    shimURL
-  })
-
-  const [recorder, setRecorder] = useState(recorder);
+  const [recorder, setRecorder] = useState(null);
 
   const cleanup = () => {
     if (recorder) {
@@ -26,9 +21,15 @@ export function useRecord(onRecordingComplete, onRecordingError) {
   }
 
   const record = () => {
-    recorder.init()
+    const _recorder = new vmsg.Recorder({
+      wasmURL,
+      shimURL
+    })
+
+    _recorder.init()
     .then(() => {
-      recorder.startRecording()
+      _recorder.startRecording()
+      setRecorder(_recorder);
       setIsRecording(true);
     })
     .catch((err) => onRecordingError(err))
